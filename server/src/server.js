@@ -1,25 +1,19 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-
 const bodyParser = require('body-parser');
 const connectDB = require('./config/connectDB');
-const userModel = require('./models/user.model');
+const routes = require('./routes/index.routes');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 connectDB();
+routes(app);
 
-app.post('/api/register', async (req, res) => {
-    const { fullName, email, password } = req.body;
-    const newUser = await userModel.create({
-        fullName,
-        email,
-        password,
-    });
-    return res.status(200).json({
-        message: 'đăng kí thành công',
-        metadata: newUser,
+app.use((err, req, res, next) => {
+    const statuscode = err.statusCode || 500;
+    return res.status(statuscode).json({
+        success: false,
+        message: err.message || 'lỗi server',
     });
 });
 
