@@ -1,0 +1,20 @@
+const { AuthFailureError } = require('../core/error.response');
+
+const { verifyToken } = require('../auth/checkAuth');
+const authUser = async (req, res, next) => {
+    try {
+        const accessToken = req.cookies.accessToken;
+        if (!accessToken) {
+            throw new AuthFailureError('vui lòng đăng nhập lại');
+        }
+        const decoded = await verifyToken(accessToken);
+        if (!decoded) {
+            throw new AuthFailureError('vui lòng đăng nhập lại');
+        }
+        req.user = decoded.id;
+        next();
+    } catch (error) {
+        console.log(error);
+    }
+};
+module.exports = { authUser };

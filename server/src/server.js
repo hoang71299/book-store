@@ -2,10 +2,13 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const bodyParser = require('body-parser');
+
+const cookieParser = require('cookie-parser');
 const connectDB = require('./config/connectDB');
 const routes = require('./routes/index.routes');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 connectDB();
 routes(app);
 
