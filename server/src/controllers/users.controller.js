@@ -85,6 +85,20 @@ class UserController {
             metadata: findUser,
         }).send(res);
     }
+
+    async logout(req, res) {
+        const userId = req.user;
+        const findUser = await userModel.findById(userId);
+        if (!findUser) {
+            throw new NotFoundError('Người dùng không tồn tại');
+        }
+        res.clearCookie('accessToken');
+        res.clearCookie('refreshToken');
+        res.clearCookie('logged');
+        return new OK({
+            message: 'Đăng xuất thành công',
+        }).send(res);
+    }
 }
 
 module.exports = new UserController();
