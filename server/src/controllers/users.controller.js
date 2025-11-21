@@ -1,9 +1,14 @@
-const { ConflictRequestError, AuthFailureError, NotFoundError } = require('../core/error.response');
+const { ConflictRequestError, AuthFailureError, NotFoundError, BadRequestError } = require('../core/error.response');
 
 const { Created, OK } = require('../core/success.response');
-const userModel = require('../models/user.model');
+const jwt = require('jsonwebtoken');
+const SendMailForgotPassword = require('../utils/mailForgotPassword');
 const { createAccessToken, createRefreshToken } = require('../auth/checkAuth');
 const bcrypt = require('bcrypt');
+const otpGenerator = require('otp-generator');
+
+const userModel = require('../models/user.model');
+const otpModel = require('../models/otp.model');
 function setCookie(res, accessToken, refreshToken) {
     res.cookie('accessToken', accessToken, {
         httpOnly: true,
@@ -97,6 +102,70 @@ class UserController {
         res.clearCookie('logged');
         return new OK({
             message: 'Đăng xuất thành công',
+        }).send(res);
+    }
+
+    async forgotPassword(req, res) {
+        const { email } = req.body;
+
+        const findUser = await userModel.findOne({ email });
+        if (!findUser) {
+            throw new NotFoundError('Người dùng không tồn tại');
+        }
+
+        const otp = otpGenerator.generate(6, {
+            digits: true,
+            lowerCaseAlphabets: false,
+            upperCaseAlphabets: false,
+            specialChars: false,
+        });
+
+        const tokenForgotPassword = jwt.sign({ email }, process.env.JWT_SECRET, {
+            expiresIn: '5m',
+        });
+        res.cookie('tokenForgotPassword', tokenForgotPassword, {
+            httpOnly: false,
+            secure: true,
+            maxAge: 5 * 60 * 1000, // 5 minutes
+            sameSite: 'strict',
+        });
+        await otpModel.create({
+            otp,
+            email,
+        });
+
+        await SendMailForgotPassword(email, otp);
+
+        return new OK({
+            message: 'Đã gửi mã OTP đến email của bạn',
+            metadata: true,
+        }).send(res);
+    }
+
+    async verifyForgotPassword(req, res) {
+        const { otp, password } = req.body;
+        const tokenForgotPassword = req.cookies.tokenForgotPassword;
+        if (!tokenForgotPassword || !otp) {
+            throw new BadRequestError('Yêu cầu không hợp lệ');
+        }
+        const decoded = jwt.verify(tokenForgotPassword, process.env.JWT_SECRET);
+        if (!decoded) {
+            throw new BadRequestError('vui long gui lai yeu cau');
+        }
+        const email = decoded.email;
+        const findOtp = await otpModel.findOne({ email, otp });
+        if (!findOtp) {
+            throw new BadRequestError('Mã OTP không hợp lệ hoặc đã hết hạn');
+        }
+
+        const findUser = await userModel.findOne({ email });
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        findUser.password = hashedPassword;
+        await findUser.save();
+        return new OK({
+            message: 'Đặt lại mật khẩu thành công',
+            metadata: true,
         }).send(res);
     }
 }
