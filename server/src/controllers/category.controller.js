@@ -4,22 +4,7 @@ const categoryModel = require('../models/category.model')
 const { Created, OK } = require('../core/success.response')
 const { BadRequestError, NotFoundError, BadGatewayError } = require('../core/error.response')
 
-function getPublicId(url) {
-  const parts = url.split('/')
-  const uploadIndex = parts.indexOf('upload')
-
-  if (uploadIndex === -1) {
-    throw new BadRequestError('Invalid Cloudinary URL')
-  }
-
-  const pathParts = parts.slice(uploadIndex + 1)
-  const pathWithoutVersion = pathParts[0].startsWith('v') ? pathParts.slice(1) : pathParts
-  const publicIdWithExt = pathWithoutVersion.join('/')
-  const publicId = publicIdWithExt.substring(0, publicIdWithExt.lastIndexOf('.'))
-
-  return publicId
-}
-
+const getPublicId = require('../utils/getPublicId')
 class CategoryController {
   async createCategory(req, res) {
     const { nameCategory } = req.body

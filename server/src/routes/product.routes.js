@@ -19,4 +19,5 @@ router.post('/create', authAdmin, upload.array('imagesProduct', 100), asyncHandl
 router.get('/list', authAdmin, asyncHandler(productController.getAllProduct))
 router.put('/update/:id', authAdmin, upload.array('imagesProduct', 100), asyncHandler(productController.updateProduct))
 router.get('/detail/:id', asyncHandler(productController.getProductById))
+router.delete('/delete/:id', authAdmin, asyncHandler(productController.deleteProduct))
 module.exports = router

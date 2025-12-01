@@ -2,6 +2,7 @@ const cloudinary = require('../config/cloudinary')
 const { Created, OK } = require('../core/success.response')
 const productModel = require('../models/product.model')
 const fs = require('fs/promises')
+const getPublicId = require('../utils/getPublicId')
 class ProductController {
   async createProduct(req, res) {
     const dataImages = req.files
@@ -21,6 +22,7 @@ class ProductController {
     }
 
     let imagesProduct = []
+
     for (const image of dataImages) {
       const { path, filename } = image
       const { url } = await cloudinary.uploader.upload(path, {
@@ -43,10 +45,11 @@ class ProductController {
     })
 
     return new Created({
-      message: 'tạo sản phẩm thành công',
+      message: 'Tạo sản phẩm thành công',
       metadata: newProduct
     }).send(res)
   }
+
   async getAllProduct(req, res) {
     const products = await productModel.find()
     return new OK({
@@ -98,6 +101,15 @@ class ProductController {
     const finalImagesProduct = [...parserOldImages, ...imagesProduct]
     const parseMetadata = metadata ? JSON.parse(metadata) : undefined
 
+    const findProduct = await productModel.findById(id)
+    if (!findProduct) {
+      throw new NotFoundError('Sản phẩm không tồn tại')
+    }
+    const imageDelete = findProduct.imagesProduct.filter((img) => !finalImagesProduct.includes(img))
+    for (const img of imageDelete) {
+      await cloudinary.uploader.destroy(getPublicId(img))
+    }
+
     const updateProduct = await productModel.findByIdAndUpdate(
       id,
       {
@@ -129,6 +141,24 @@ class ProductController {
     return new OK({
       message: 'Lấy sản phẩm thành công',
       metadata: product
+    }).send(res)
+  }
+  async deleteProduct(req, res) {
+    const { id } = req.params
+    if (!id) {
+      throw new BadRequestError('Thiếu thông tin sản phẩm')
+    }
+    const findProduct = await productModel.findById(id)
+    if (!findProduct) {
+      throw new NotFoundError('Sản phẩm không tồn tại')
+    }
+    for (const img of findProduct.imagesProduct) {
+      await cloudinary.uploader.destroy(getPublicId(img))
+    }
+    await findProduct.deleteOne()
+    return new OK({
+      message: 'Xóa sản phẩm thành công',
+      metadata: findProduct
     }).send(res)
   }
 }
