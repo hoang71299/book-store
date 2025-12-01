@@ -15,5 +15,7 @@ const upload = multer({ storage: storage });
 const { authAdmin } = require('../middleware/authUser');
 const categoryController = require('../controllers/category.controller');
 router.post('/create', authAdmin, upload.single('imageCategory'), asyncHandler(categoryController.createCategory));
+router.get('/list', authAdmin, asyncHandler(categoryController.getAllCategory));
+router.put('/update/:id', authAdmin, upload.single('imageCategory'), asyncHandler(categoryController.updateCategory));
 
 module.exports = router;
