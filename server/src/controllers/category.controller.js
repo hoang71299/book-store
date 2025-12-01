@@ -66,7 +66,7 @@ class CategoryController {
         }
 
         let imageCategory = findCategory.imageCategory;
-        const oldImage = findCategory.imageCategory; // ✅ LƯU ẢNH CŨ
+        const oldImage = findCategory.imageCategory;
 
         if (req.file) {
             const { path, filename } = req.file;
