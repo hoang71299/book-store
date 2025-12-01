@@ -2,7 +2,7 @@ const cloudinary = require('../config/cloudinary');
 const fs = require('fs/promises');
 const categoryModel = require('../models/category.model');
 const { Created, OK } = require('../core/success.response');
-const { BadRequestError, NotFoundError } = require('../core/error.response');
+const { BadRequestError, NotFoundError, BadGatewayError } = require('../core/error.response');
 
 function getPublicId(url) {
     const parts = url.split('/');
@@ -94,6 +94,23 @@ class CategoryController {
         return new OK({
             message: 'Cập nhập danh mục thành công',
             metadata: updateCategory,
+        }).send(res);
+    }
+
+    async deleteCategory(req, res) {
+        const { id } = req.params;
+        if (!id) {
+            throw new BadGatewayError('thiếu thông tin người dùng');
+        }
+        const findCategory = await categoryModel.findById(id);
+        if (!findCategory) {
+            throw new NotFoundError('Danh mục không tồn tại');
+        }
+        await cloudinary.uploader.destroy(getPublicId(findCategory.imageCategory));
+        await findCategory.deleteOne();
+        return new OK({
+            message: 'xóa danh mục thành công ',
+            metadata: findCategory,
         }).send(res);
     }
 }

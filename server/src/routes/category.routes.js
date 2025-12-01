@@ -17,5 +17,5 @@ const categoryController = require('../controllers/category.controller');
 router.post('/create', authAdmin, upload.single('imageCategory'), asyncHandler(categoryController.createCategory));
 router.get('/list', authAdmin, asyncHandler(categoryController.getAllCategory));
 router.put('/update/:id', authAdmin, upload.single('imageCategory'), asyncHandler(categoryController.updateCategory));
-
+router.delete('/delete/:id', authAdmin, asyncHandler(categoryController.deleteCategory));
 module.exports = router;
