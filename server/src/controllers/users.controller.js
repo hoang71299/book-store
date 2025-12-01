@@ -157,7 +157,6 @@ class UserController {
         if (!findOtp) {
             throw new BadRequestError('Mã OTP không hợp lệ hoặc đã hết hạn');
         }
-
         const findUser = await userModel.findOne({ email });
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
