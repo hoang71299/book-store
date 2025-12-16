@@ -8,4 +8,5 @@ router.post('/create', authAdmin, asyncHandler(couponController.createCoupon))
 router.get('/list', authAdmin, asyncHandler(couponController.getAllCoupons))
 router.put('/update/:id', authAdmin, asyncHandler(couponController.updateCoupon))
 router.delete('/delete/:id', authAdmin, asyncHandler(couponController.deleteCoupon))
+
 module.exports = router
