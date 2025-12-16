@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const statusCodes = require('./statusCodes');
-const reasonPhrases = require('./reasonPhrases');
+const statusCodes = require('./statusCodes')
+const reasonPhrases = require('./reasonPhrases')
 
 /**
  * Class lỗi cơ sở cho tất cả các lỗi tùy chỉnh trong API
@@ -10,10 +10,10 @@ const reasonPhrases = require('./reasonPhrases');
  * @param {number} statusCode - Mã trạng thái HTTP
  */
 class ErrorResponse extends Error {
-    constructor(message, statusCode) {
-        super(message);
-        this.statusCode = statusCode;
-    }
+  constructor(message, statusCode) {
+    super(message)
+    this.statusCode = statusCode
+  }
 }
 
 /**
@@ -22,9 +22,9 @@ class ErrorResponse extends Error {
  * Ví dụ: Tạo tài khoản với email đã tồn tại, tạo sản phẩm với mã đã có
  */
 class ConflictRequestError extends ErrorResponse {
-    constructor(message = reasonPhrases.CONFLICT, statusCode = statusCodes.CONFLICT) {
-        super(message, statusCode);
-    }
+  constructor(message = reasonPhrases.CONFLICT, statusCode = statusCodes.CONFLICT) {
+    super(message, statusCode)
+  }
 }
 
 /**
@@ -33,9 +33,9 @@ class ConflictRequestError extends ErrorResponse {
  * Ví dụ: Thiếu trường bắt buộc, định dạng dữ liệu không hợp lệ
  */
 class BadRequestError extends ErrorResponse {
-    constructor(message = reasonPhrases.BAD_REQUEST, statusCode = statusCodes.BAD_REQUEST) {
-        super(message, statusCode);
-    }
+  constructor(message = reasonPhrases.BAD_REQUEST, statusCode = statusCodes.BAD_REQUEST) {
+    super(message, statusCode)
+  }
 }
 
 /**
@@ -44,9 +44,9 @@ class BadRequestError extends ErrorResponse {
  * Ví dụ: Token hết hạn, sai mật khẩu, thiếu token xác thực
  */
 class AuthFailureError extends ErrorResponse {
-    constructor(message = reasonPhrases.UNAUTHORIZED, statusCode = statusCodes.UNAUTHORIZED) {
-        super(message, statusCode);
-    }
+  constructor(message = reasonPhrases.UNAUTHORIZED, statusCode = statusCodes.UNAUTHORIZED) {
+    super(message, statusCode)
+  }
 }
 
 /**
@@ -55,9 +55,9 @@ class AuthFailureError extends ErrorResponse {
  * Ví dụ: Truy cập vào user không tồn tại, URL không hợp lệ
  */
 class NotFoundError extends ErrorResponse {
-    constructor(message = reasonPhrases.NOT_FOUND, statusCode = statusCodes.NOT_FOUND) {
-        super(message, statusCode);
-    }
+  constructor(message = reasonPhrases.NOT_FOUND, statusCode = statusCodes.NOT_FOUND) {
+    super(message, statusCode)
+  }
 }
 
 /**
@@ -66,9 +66,9 @@ class NotFoundError extends ErrorResponse {
  * Ví dụ: Người dùng thường truy cập trang admin, không đủ quyền thực hiện hành động
  */
 class ForbiddenError extends ErrorResponse {
-    constructor(message = reasonPhrases.FORBIDDEN, statusCode = statusCodes.FORBIDDEN) {
-        super(message, statusCode);
-    }
+  constructor(message = reasonPhrases.FORBIDDEN, statusCode = statusCodes.FORBIDDEN) {
+    super(message, statusCode)
+  }
 }
 
 /**
@@ -77,9 +77,9 @@ class ForbiddenError extends ErrorResponse {
  * Ví dụ: Lỗi kết nối database, lỗi xử lý dữ liệu
  */
 class InternalServerError extends ErrorResponse {
-    constructor(message = reasonPhrases.INTERNAL_SERVER_ERROR, statusCode = statusCodes.INTERNAL_SERVER_ERROR) {
-        super(message, statusCode);
-    }
+  constructor(message = reasonPhrases.INTERNAL_SERVER_ERROR, statusCode = statusCodes.INTERNAL_SERVER_ERROR) {
+    super(message, statusCode)
+  }
 }
 
 /**
@@ -88,9 +88,9 @@ class InternalServerError extends ErrorResponse {
  * Ví dụ: Lỗi khi gọi API bên thứ 3, lỗi kết nối microservice
  */
 class BadGatewayError extends ErrorResponse {
-    constructor(message = reasonPhrases.BAD_GATEWAY, statusCode = statusCodes.BAD_GATEWAY) {
-        super(message, statusCode);
-    }
+  constructor(message = reasonPhrases.BAD_GATEWAY, statusCode = statusCodes.BAD_GATEWAY) {
+    super(message, statusCode)
+  }
 }
 
 /**
@@ -99,9 +99,9 @@ class BadGatewayError extends ErrorResponse {
  * Ví dụ: Server đang bảo trì, server quá tải
  */
 class ServiceUnavailableError extends ErrorResponse {
-    constructor(message = reasonPhrases.SERVICE_UNAVAILABLE, statusCode = statusCodes.SERVICE_UNAVAILABLE) {
-        super(message, statusCode);
-    }
+  constructor(message = reasonPhrases.SERVICE_UNAVAILABLE, statusCode = statusCodes.SERVICE_UNAVAILABLE) {
+    super(message, statusCode)
+  }
 }
 
 /**
@@ -110,9 +110,9 @@ class ServiceUnavailableError extends ErrorResponse {
  * Ví dụ: Ngày sinh trong tương lai, số điện thoại sai định dạng
  */
 class UnprocessableEntityError extends ErrorResponse {
-    constructor(message = reasonPhrases.UNPROCESSABLE_ENTITY, statusCode = statusCodes.UNPROCESSABLE_ENTITY) {
-        super(message, statusCode);
-    }
+  constructor(message = reasonPhrases.UNPROCESSABLE_ENTITY, statusCode = statusCodes.UNPROCESSABLE_ENTITY) {
+    super(message, statusCode)
+  }
 }
 
 /**
@@ -121,21 +121,21 @@ class UnprocessableEntityError extends ErrorResponse {
  * Ví dụ: Giới hạn số lần đăng nhập, giới hạn số request API
  */
 class TooManyRequestsError extends ErrorResponse {
-    constructor(message = reasonPhrases.TOO_MANY_REQUESTS, statusCode = statusCodes.TOO_MANY_REQUESTS) {
-        super(message, statusCode);
-    }
+  constructor(message = reasonPhrases.TOO_MANY_REQUESTS, statusCode = statusCodes.TOO_MANY_REQUESTS) {
+    super(message, statusCode)
+  }
 }
 
 module.exports = {
-    ErrorResponse,
-    ConflictRequestError,
-    BadRequestError,
-    AuthFailureError,
-    NotFoundError,
-    ForbiddenError,
-    InternalServerError,
-    BadGatewayError,
-    ServiceUnavailableError,
-    UnprocessableEntityError,
-    TooManyRequestsError,
-};
+  ErrorResponse,
+  ConflictRequestError,
+  BadRequestError,
+  AuthFailureError,
+  NotFoundError,
+  ForbiddenError,
+  InternalServerError,
+  BadGatewayError,
+  ServiceUnavailableError,
+  UnprocessableEntityError,
+  TooManyRequestsError
+}

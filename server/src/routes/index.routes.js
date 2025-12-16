@@ -1,10 +1,12 @@
-const usersRoutes = require('./users.routes');
-const categoriesRoutes = require('./category.routes');
-const ProductsRoutes = require('./product.routes');
+const usersRoutes = require('./users.routes')
+const categoriesRoutes = require('./category.routes')
+const ProductsRoutes = require('./product.routes')
+const cartRoutes = require('./cart.routes')
 function routes(app) {
-    app.use('/api/user', usersRoutes);
-    app.use('/api/category', categoriesRoutes);
-    app.use('/api/product', ProductsRoutes);
+  app.use('/api/user', usersRoutes)
+  app.use('/api/category', categoriesRoutes)
+  app.use('/api/product', ProductsRoutes)
+  app.use('/api/cart', cartRoutes)
 }
 
-module.exports = routes;
+module.exports = routes

@@ -1,0 +1,112 @@
+const { BadRequestError } = require('../core/error.response')
+const { OK } = require('../core/success.response')
+const cartModel = require('../models/cart.model')
+const productModel = require('../models/product.model')
+async function calculateTotalPrice(findCartUser) {
+  const allProductIds = findCartUser.products.map((p) => p.productId)
+
+  const productsData = await productModel.find({ _id: { $in: allProductIds } })
+
+  let totalPrice = 0
+
+  findCartUser.products.forEach((p) => {
+    const product = productsData.find((prod) => prod._id.toString() === p.productId.toString())
+    if (product) {
+      const priceAfterDiscount = product.priceProduct - (product.priceProduct * product.discountProduct) / 100
+      totalPrice += priceAfterDiscount * p.quantity
+    }
+  })
+  findCartUser.totalPrice = totalPrice
+  await findCartUser.save()
+}
+class CartController {
+  async createCart(req, res) {
+    const id = req.user
+    const { productId, quantity } = req.body
+
+    if (!id || !productId || !quantity) {
+      throw new BadRequestError('Thiếu thông tin giỏ hàng')
+    }
+    const findProductDb = await productModel.findById(productId)
+    if (!findProductDb) {
+      throw new BadRequestError('Sản phẩm không tồn tại')
+    }
+    if (findProductDb.stockProduct < Number(quantity)) {
+      throw new BadRequestError('Số lượng sản phẩm không đủ')
+    }
+    let findCartUser = await cartModel.findOne({ userId: id })
+
+    if (!findCartUser) {
+      findCartUser = await cartModel.create({
+        userId: id,
+        products: [{ productId, quantity: Number(quantity) }]
+      })
+      await findProductDb.updateOne({
+        $inc: { stockProduct: -Number(quantity) }
+      })
+    } else {
+      const findProduct = findCartUser.products.find((product) => product.productId.toString() === productId)
+
+      if (findProduct) {
+        findProduct.quantity += Number(quantity)
+        await findProductDb.updateOne({ $inc: { stockProduct: -Number(quantity) } })
+      } else {
+        findCartUser.products.push({ productId, quantity })
+        await findProductDb.updateOne({ $inc: { stockProduct: -Number(quantity) } })
+      }
+      await findCartUser.save()
+    }
+    await calculateTotalPrice(findCartUser)
+
+    return new OK({
+      message: 'Thêm sản phẩm vào giỏ hàng thành công',
+      metadata: findCartUser
+    }).send(res)
+  }
+  async updateCart(req, res) {
+    const id = req.user
+    const { productId, newQuantity } = req.body
+    // Logic cập nhật giỏ hàng
+    if (!id || !productId) {
+      throw new BadRequestError('Thiếu thông tin giỏ hàng')
+    }
+    const findCartUser = await cartModel.findOne({ userId: id })
+    if (!findCartUser) {
+      throw new BadRequestError('Giỏ hàng không tồn tại')
+    }
+    const findProductInCart = findCartUser.products.find((product) => product.productId.toString() === productId)
+    if (!findProductInCart) {
+      throw new BadRequestError('Sản phẩm không tồn tại trong giỏ hàng')
+    }
+    const findProductDb = await productModel.findById(productId)
+    if (!findProductDb) {
+      throw new BadRequestError('Sản phẩm không tồn tại')
+    }
+    const currentQuantity = findProductInCart.quantity
+    if (Number(newQuantity) === 0) {
+      // Xóa sản phẩm khỏi giỏ hàng
+      findCartUser.products = findCartUser.products.filter((product) => product.productId.toString() !== productId)
+      findProductDb.stockProduct += currentQuantity
+      await findProductDb.save()
+    } else if (Number(newQuantity) >= currentQuantity) {
+      const addQuantity = Number(newQuantity) - currentQuantity
+      if (findProductDb.stockProduct < addQuantity) {
+        throw new BadRequestError('Số lượng sản phẩm không đủ')
+      }
+      findProductDb.stockProduct -= addQuantity
+      findProductInCart.quantity = Number(newQuantity)
+      await findProductDb.save()
+    } else {
+      const reduceQuantity = currentQuantity - Number(newQuantity)
+      findProductDb.stockProduct += reduceQuantity
+      findProductInCart.quantity = Number(newQuantity)
+      await findProductDb.save()
+    }
+    await calculateTotalPrice(findCartUser)
+    return new OK({
+      message: 'Cập nhật giỏ hàng thành công',
+      metadata: findCartUser
+    }).send(res)
+  }
+}
+module.exports = new CartController()

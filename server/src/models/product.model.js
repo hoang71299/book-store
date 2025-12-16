@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
-const productCategory = new Schema(
+
+const productModel = new Schema(
   {
     imagesProduct: { type: Array, require: true },
     nameProduct: { type: String, require: true },
@@ -10,10 +11,11 @@ const productCategory = new Schema(
     stockProduct: { type: Number, default: 0 },
     descriptionProduct: { type: String, require: true },
     categoryProduct: { type: mongoose.Schema.Types.ObjectId, ref: 'category' },
-    metadata: { type: mongoose.Schema.Types.Mixed, require: true }
+    metadata: { type: mongoose.Schema.Types.Mixed }
   },
   {
     timestamps: true
   }
 )
-module.exports = mongoose.model('products', productCategory)
+
+module.exports = mongoose.model('products', productModel)
