@@ -108,5 +108,53 @@ class CartController {
       metadata: findCartUser
     }).send(res)
   }
+  async deleteProductInCart(req, res) {
+    const id = req.user
+    const { productId } = req.params
+
+    if (!id || !productId) {
+      throw new BadRequestError('Thiếu thông tin giỏ hàng')
+    }
+
+    const findCartUser = await cartModel.findOne({ userId: id })
+    if (!findCartUser) {
+      throw new BadRequestError('Giỏ hàng không tồn tại')
+    }
+
+    const findProductInCart = findCartUser.products.find((product) => product.productId.toString() === productId)
+    if (!findProductInCart) {
+      throw new BadRequestError('Sản phẩm không tồn tại trong giỏ hàng')
+    }
+
+    const productDb = await productModel.findById(productId)
+    if (!productDb) {
+      throw new BadRequestError('Sản phẩm không tồn tại')
+    }
+
+    findCartUser.products = findCartUser.products.filter((product) => product.productId.toString() !== productId)
+    productDb.stockProduct += findProductInCart.quantity
+    await productDb.save()
+    await calculateTotalPrice(findCartUser)
+    return new OK({
+      message: 'Xóa sản phẩm khỏi giỏ hàng thành công',
+      metadata: findCartUser
+    }).send(res)
+  }
+
+  async getCartInUser(req, res) {
+    const id = req.user
+    const findCartUser = await cartModel.findOne({ userId: id })
+    if (!findCartUser) {
+      const newCart = await cartModel.create({ userId: id, products: [] })
+      return new OK({
+        message: 'Lấy giỏ hàng thành công',
+        metadata: newCart
+      }).send(res)
+    }
+    return new OK({
+      message: 'Lấy giỏ hàng thành công',
+      metadata: findCartUser
+    }).send(res)
+  }
 }
 module.exports = new CartController()

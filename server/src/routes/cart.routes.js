@@ -6,5 +6,6 @@ const cartController = require('../controllers/cart.controller')
 
 router.post('/create', authUser, asyncHandler(cartController.createCart))
 router.put('/update', authUser, asyncHandler(cartController.updateCart))
-
+router.delete('/delete/:productId', authUser, asyncHandler(cartController.deleteProductInCart))
+router.get('/get', authUser, asyncHandler(cartController.getCartInUser))
 module.exports = router
