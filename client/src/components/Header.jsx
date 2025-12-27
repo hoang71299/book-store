@@ -30,7 +30,7 @@ export default function Header() {
 
           {/* Auth Buttons */}
           <div className='flex gap-2 flex-shrink-0'>
-            <Button variant='ghost'>Đăng nhập</Button>
+            <Button variant='secondary'>Đăng nhập</Button>
             <Button>Đăng ký</Button>
           </div>
         </div>
