@@ -1,14 +1,12 @@
-import { useEffect } from 'react'
-import { requestGet } from './config/request'
+import Header from './components/Header'
 function App() {
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await requestGet()
-      console.log(res)
-    }
-    fetchData()
-  }, [])
-  return <>hello l2 team</>
+  return (
+    <div>
+      <header>
+        <Header />
+      </header>
+    </div>
+  )
 }
 
 export default App

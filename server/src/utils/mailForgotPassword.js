@@ -1,36 +1,36 @@
-const { google } = require('googleapis');
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+const { google } = require('googleapis')
+const nodemailer = require('nodemailer')
+require('dotenv').config()
 
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const REDIRECT_URI = process.env.REDIRECT_URI;
-const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+const CLIENT_ID = process.env.CLIENT_ID
+const CLIENT_SECRET = process.env.CLIENT_SECRET
+const REDIRECT_URI = process.env.REDIRECT_URI
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN
 
-const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN })
 
 const SendMailForgotPassword = async (email, otp) => {
-    try {
-        const accessToken = await oAuth2Client.getAccessToken();
-        const transport = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                type: 'OAuth2',
-                user: process.env.EMAIL_USER,
-                clientId: CLIENT_ID,
-                clientSecret: CLIENT_SECRET,
-                refreshToken: REFRESH_TOKEN,
-                accessToken: accessToken,
-            },
-        });
+  try {
+    const accessToken = await oAuth2Client.getAccessToken()
+    const transport = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        type: 'OAuth2',
+        user: process.env.EMAIL_USER,
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+        refreshToken: REFRESH_TOKEN,
+        accessToken: accessToken
+      }
+    })
 
-        const info = await transport.sendMail({
-            from: `"Moho" <${process.env.EMAIL_USER}>`,
-            to: email,
-            subject: 'Yêu cầu đặt lại mật khẩu',
-            text: `Mã OTP để đặt lại mật khẩu của bạn là: ${otp}`,
-            html: `
+    const info = await transport.sendMail({
+      from: `"Moho" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'Yêu cầu đặt lại mật khẩu',
+      text: `Mã OTP để đặt lại mật khẩu của bạn là: ${otp}`,
+      html: `
             <!DOCTYPE html>
             <html lang="vi">
             <head>
@@ -130,13 +130,13 @@ const SendMailForgotPassword = async (email, otp) => {
                 </div>
             </body>
             </html>
-            `,
-        });
+            `
+    })
 
-        console.log('Forgot password email sent:', info.messageId);
-    } catch (error) {
-        console.log('Error sending forgot password email:', error);
-    }
-};
+    console.log('Forgot password email sent:', info.messageId)
+  } catch (error) {
+    console.log('Error sending forgot password email:', error)
+  }
+}
 
-module.exports = SendMailForgotPassword;
+module.exports = SendMailForgotPassword
