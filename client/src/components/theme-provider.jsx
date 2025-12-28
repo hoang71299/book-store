@@ -40,7 +40,7 @@ export function ThemeProvider({ children, defaultTheme = 'system', storageKey = 
   )
 }
 
-export function useTheme() {
+export const useTheme = () => {
   const context = useContext(ThemeProviderContext)
 
   if (!context) {

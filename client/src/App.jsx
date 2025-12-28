@@ -1,26 +1,20 @@
+import Banner from './components/Banner'
 import Header from './components/Header'
-import HeroSection from './components/HeroSection'
-import CategorySection from './components/CategorySection'
-import ProductGrid from './components/ProductGrid'
-import FeatureSection from './components/FeatureSection'
-import TestimonialSection from './components/TestimonialSection'
-import NewsletterSection from './components/NewsletterSection'
-
+import { ThemeProvider } from '@/components/theme-provider'
+import HomePage from './components/HomePage'
 function App() {
   return (
-    <div>
-      <header>
-        <Header />
-      </header>
-      <main>
-        <HeroSection />
-        <CategorySection />
-        <ProductGrid />
-        <FeatureSection />
-        <TestimonialSection />
-        <NewsletterSection />
-      </main>
-    </div>
+    <ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
+      <div>
+        <header>
+          <Header />
+        </header>
+        <main>
+          <Banner></Banner>
+          <HomePage />
+        </main>
+      </div>
+    </ThemeProvider>
   )
 }
 

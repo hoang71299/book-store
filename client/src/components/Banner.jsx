@@ -9,7 +9,7 @@ export default function Banner() {
   ]
 
   return (
-    <div className='w-full'>
+    <div className='w-full pt-20'>
       <Carousel className='w-full'>
         <CarouselContent>
           {image.map((item, index) => {
@@ -20,8 +20,8 @@ export default function Banner() {
             )
           })}
         </CarouselContent>
-        <CarouselPrevious className='left-4 bg-white/80 hover:bg-white text-black border-0' />
-        <CarouselNext className='right-4 bg-white/80 hover:bg-white text-black border-0' />
+        <CarouselPrevious className='left-4 bg-primary text-primary-foreground border-0 h-12 w-12' />
+        <CarouselNext className='right-4 bg-primary text-primary-foreground border-0 h-12 w-12' />
       </Carousel>
     </div>
   )

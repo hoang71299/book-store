@@ -161,5 +161,19 @@ class ProductController {
       metadata: findProduct
     }).send(res)
   }
+
+  async getProductByCategory(req, res) {
+    const { idCategory } = req.params
+    let product = []
+    if (idCategory === 'all') {
+      product = await productModel.find()
+    } else {
+      product = await productModel.find({ categoryProduct: idCategory })
+    }
+    return new OK({
+      message: 'Lấy sản phẩm theo danh mục thành công',
+      metadata: product
+    }).send(res)
+  }
 }
 module.exports = new ProductController()
