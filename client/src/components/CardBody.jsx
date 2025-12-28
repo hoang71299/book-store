@@ -3,6 +3,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Heart, ShoppingCart } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function CardBody({ dataItem }) {
   const [isFavorite, setIsFavorite] = useState(false)
@@ -13,12 +14,12 @@ export default function CardBody({ dataItem }) {
     dataItem
 
   const discountedPrice = Math.round(priceProduct * (1 - discountProduct / 100))
-
+  const savingAmount = priceProduct - discountedPrice
   return (
-    <Card className=' w-full overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col h-full'>
+    <Card className=' cursor-pointer w-full overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col h-full'>
       {/* Product Image */}
       <CardContent className='p-0 relative flex-shrink-0'>
-        <div className='relative w-full aspect-square overflow-hidden bg-white'>
+        <div className='relative w-full aspect-square overflow-hidden bg-white '>
           {imagesProduct?.[0] ? (
             <img
               src={imagesProduct[0]}
@@ -40,26 +41,25 @@ export default function CardBody({ dataItem }) {
 
           {/* Favorite Button */}
           <Button
-            variant='ghost'
+            variant='outline'
             size='icon'
-            onClick={() => setIsFavorite(!isFavorite)}
             className='absolute top-2 left-2  bg-white/80 hover:bg-white dark:bg-gray-900/80 dark:hover:bg-gray-900 rounded-full'
+            onClick={() => setIsFavorite(!isFavorite)}
           >
             <Heart
-              size={16}
-              fill={isFavorite ? 'rgb(231, 0, 11)' : 'none'}
-              className={isFavorite ? 'text-destructive' : 'text-accent-foreground'}
+              className={`transition-colors ${
+                isFavorite ? 'fill-accent-foreground text-accent' : 'text-muted-foreground'
+              }`}
             />
           </Button>
           {/* Stock Status */}
-          {stockProduct > 0 && (
-            <div className='absolute bottom-2 left-2 bg-orange-500 text-background text-xs font-semibold px-2 py-1 rounded'>
+          {stockProduct > 0 ? (
+            <Badge className='absolute bottom-3 left-3 bg-green-500 hover:bg-green-600 text-white text-xs font-semibold'>
               Còn {stockProduct}
-            </div>
-          )}
-          {stockProduct === 0 && (
-            <div className='absolute inset-0  flex items-center justify-center'>
-              <span className='text-white font-bold'>Hết hàng</span>
+            </Badge>
+          ) : (
+            <div className='absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm'>
+              <span className='text-white font-bold text-lg'>Hết hàng</span>
             </div>
           )}
         </div>
@@ -69,9 +69,11 @@ export default function CardBody({ dataItem }) {
       <CardContent className='flex-1 flex flex-col justify-between p-3'>
         {/* Name & Description */}
         <div>
-          <h3 className='hover:font-semibold font-semibold text-sm line-clamp-2  transition-colors cursor-pointer'>
-            {nameProduct}
-          </h3>
+          <Link to={`/product/${dataItem._id}`}>
+            <h2 className='hover:text-blue-600 font-semibold text-lg line-clamp-2  transition-colors cursor-pointer'>
+              {nameProduct}
+            </h2>
+          </Link>
           <p className='text-xs text-muted-foreground line-clamp-1 mt-1'>{descriptionProduct}</p>
         </div>
 
@@ -97,13 +99,17 @@ export default function CardBody({ dataItem }) {
         )}
 
         {/* Price */}
-        <div className='mt-2'>
-          <div className='flex items-center gap-1'>
-            <span className='text-lg font-bold '>{discountedPrice.toLocaleString()}</span>
-            <span className='text-xs text-muted-foreground'>₫</span>
+        <div className='space-y-1'>
+          <div className='flex items-baseline gap-2'>
+            <span className='text-xl font-bold text-foreground'>{discountedPrice.toLocaleString()} ₫</span>
+            {discountProduct > 0 && (
+              <span className='text-xs text-muted-foreground line-through'>{priceProduct.toLocaleString()} ₫</span>
+            )}
           </div>
           {discountProduct > 0 && (
-            <span className='text-xs text-muted-foreground line-through'>{priceProduct.toLocaleString()} ₫</span>
+            <p className='text-xs text-green-600 dark:text-green-400 font-medium'>
+              Tiết kiệm {savingAmount.toLocaleString()} ₫
+            </p>
           )}
         </div>
       </CardContent>

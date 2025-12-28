@@ -92,7 +92,7 @@ export default function HomePage() {
                 ? dataCategory.find((c) => c._id === selectedCategory)?.nameCategory
                 : 'Tất cả sản phẩm'}
             </h2>
-            <p className='text-muted-foreground  mt-1'>{dataProduct.length} sản phẩm</p>
+            <p className='text-muted-foreground  mt-1'>Hiển {dataProduct.length} sản phẩm</p>
           </div>
 
           {/* Products Grid - 5 columns */}
