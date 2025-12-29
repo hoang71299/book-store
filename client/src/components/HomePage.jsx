@@ -5,12 +5,12 @@ import CardBody from './CardBody'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Package, ArrowRight } from 'lucide-react'
+import { useStore } from '@/hooks/useStore'
 
 export default function HomePage() {
   const [dataCategory, setDataCategory] = useState([])
-  const [dataProduct, setDataProduct] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('all')
-
+  const { fetchProduct, dataProduct, setDataProduct } = useStore()
   const fetchCategory = async () => {
     try {
       const res = await listCategory()
@@ -20,18 +20,13 @@ export default function HomePage() {
     }
   }
 
-  const fetchProduct = async () => {
-    try {
-      const res = await listProduct()
-      setDataProduct(res?.metadata || [])
-    } catch (error) {
-      console.error('Fetch product error:', error)
-    }
+  const getProduct = async () => {
+    await fetchProduct()
   }
 
   useEffect(() => {
     fetchCategory()
-    fetchProduct()
+    getProduct()
   }, [])
 
   useEffect(() => {

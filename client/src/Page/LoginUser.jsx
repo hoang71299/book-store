@@ -20,12 +20,10 @@ const LoginUser = () => {
       const res = await requestLogin(data)
 
       setDataLogin(res)
-      toast.success(res.message)
-
       setTimeout(() => {
         navigate('/')
-        window.location.reload()
       }, 1000)
+      toast.success(res.message)
     } catch (err) {
       toast.error(err.response.data.message)
     }

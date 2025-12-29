@@ -4,10 +4,13 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Heart, ShoppingCart } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { requestAddToCart } from '@/config/CartRequest'
+import { toast } from 'sonner'
+import { useStore } from '@/hooks/useStore'
 
 export default function CardBody({ dataItem }) {
   const [isFavorite, setIsFavorite] = useState(false)
-
+  const { getCart, fetchProduct } = useStore()
   if (!dataItem) return null
 
   const { nameProduct, descriptionProduct, priceProduct, discountProduct, imagesProduct, stockProduct, metadata } =
@@ -15,6 +18,20 @@ export default function CardBody({ dataItem }) {
 
   const discountedPrice = Math.round(priceProduct * (1 - discountProduct / 100))
   const savingAmount = priceProduct - discountedPrice
+  const handleAddToCart = async () => {
+    try {
+      const data = {
+        productId: dataItem._id,
+        quantity: 1
+      }
+      const res = await requestAddToCart(data)
+      toast.success(res.message)
+      await getCart()
+      await fetchProduct()
+    } catch (error) {
+      toast.error(error.response.data.message)
+    }
+  }
   return (
     <Card className=' cursor-pointer w-full overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col h-full'>
       {/* Product Image */}
@@ -116,7 +133,7 @@ export default function CardBody({ dataItem }) {
 
       {/* Action Buttons */}
       <CardFooter className='gap-1 p-3 pt-0'>
-        <Button className='w-full' disabled={stockProduct === 0}>
+        <Button className='w-full' disabled={stockProduct === 0} onClick={handleAddToCart}>
           <ShoppingCart className='mr-2' />
           Thêm vào giỏ
         </Button>

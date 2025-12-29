@@ -5,6 +5,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import AuthenticationLayout from '@/layout/AuthenticationLayout'
 import LoginUser from '../Page/LoginUser'
 import RegisterUser from '@/Page/RegisterUser'
+import CartUser from '../Page/CartUser'
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
       {
         path: 'product/:id',
         element: <DetailProduct />
+      },
+      {
+        path: '/cart',
+        element: <CartUser />
       }
     ]
   },

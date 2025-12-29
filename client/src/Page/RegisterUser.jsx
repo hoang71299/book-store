@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import LoginForm from '@/components/LoginForm'
 import { requestLogin, requestRegister } from '@/config/UserRequest'
 import { toast } from 'sonner'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import RegisterForm from '@/components/RegisterForm'
 import { useStore } from '@/hooks/useStore'
 
@@ -51,10 +51,10 @@ const RegisterUser = () => {
           <div className='space-y-4'>
             <RegisterForm onRegister={handleRegister} />
             <p className='text-muted-foreground text-center'>
-              Chưa có tài khoản?{' '}
-              <a href='#' className='text-card-foreground hover:underline'>
-                Đăng ký ngay
-              </a>
+              Đã có tài khoản ?{' '}
+              <Link to={'/login'} className='text-card-foreground hover:underline'>
+                Đăng nhập ngay
+              </Link>
             </p>
           </div>
         </CardContent>

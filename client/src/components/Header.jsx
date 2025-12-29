@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { dataUser, cart } = useStore()
+  const { dataUser, cart1 } = useStore()
   const navigate = useNavigate()
   const handleLogout = async () => {
     try {
@@ -64,12 +64,14 @@ export default function Header() {
           <div className='flex items-center gap-2 flex-shrink-0'>
             <ModeToggle />
 
-            <Button variant='ghost' size='icon' className='relative cursor-pointer'>
-              <ShoppingCart className='h-5 w-5' />
-              <span className='absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold'>
-                {cart?.cart?.products?.length || 0}
-              </span>
-            </Button>
+            <Link to='/cart'>
+              <Button variant='ghost' size='icon' className='relative cursor-pointer'>
+                <ShoppingCart className='h-5 w-5' />
+                <span className='absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold'>
+                  {cart1?.cart?.products?.length || 0}
+                </span>
+              </Button>
+            </Link>
             {/* 
             <Button variant='ghost' size='icon' className='hidden sm:flex'>
               <User className='h-5 w-5' />

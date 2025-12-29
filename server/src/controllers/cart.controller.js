@@ -83,7 +83,9 @@ class CartController {
     if (!findProductDb) {
       throw new BadRequestError('Sản phẩm không tồn tại')
     }
-    const currentQuantity = findProductInCart.quantity
+    const currentQuantity = Number(findProductInCart.quantity)
+    const quantity = Number(newQuantity)
+
     if (Number(newQuantity) === 0) {
       // Xóa sản phẩm khỏi giỏ hàng
       findCartUser.products = findCartUser.products.filter((product) => product.productId.toString() !== productId)
@@ -144,12 +146,12 @@ class CartController {
 
   async getCartInUser(req, res) {
     const id = req.user
-    const findCartUser = await cartModel.findOne({ userId: id })
+    const findCartUser = await cartModel.findOne({ userId: id }).populate('products.productId')
     const today = new Date()
     const coupons = await couponModel.find({
       startDate: { $lte: today },
       endDate: { $gte: today },
-      minPrice: { $lte: findCartUser.totalPrice },
+      minPrice: { $lte: findCartUser?.totalPrice },
       quantity: { $gt: 0 }
     })
     if (!findCartUser) {
