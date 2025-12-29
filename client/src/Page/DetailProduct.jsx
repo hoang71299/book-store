@@ -5,8 +5,11 @@ import { Badge } from '@/components/ui/badge'
 import { Heart, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react'
 import Header from '@/components/Header'
 import { Input } from '@/components/ui/input'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { productDetail } from '@/config/ProductRequest'
+import { useStore } from '@/hooks/useStore'
+import { requestAddToCart } from '@/config/CartRequest'
+import { toast } from 'sonner'
 
 // Sample product data - Replace with actual data fetching
 
@@ -15,6 +18,8 @@ export default function ProductPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [isLiked, setIsLiked] = useState(false)
+
+  const { dataUser } = useStore()
 
   const discountedPrice = Math.floor(productData.priceProduct * (1 - productData.discountProduct / 100))
 
@@ -26,14 +31,27 @@ export default function ProductPage() {
   const prevImage = () => {
     setSelectedImageIndex((prev) => (prev - 1 + productData.imagesProduct.length) % productData.imagesProduct.length)
   }
+  const fetchProductDetail = async () => {
+    const res = await productDetail(id)
+    setProductData(res.metadata)
+  }
   useEffect(() => {
-    const fetchProductDetail = async () => {
-      const res = await productDetail(id)
-      setProductData(res.metadata)
-    }
     fetchProductDetail()
   }, [id])
-  console.log(productData)
+
+  const handleAddToCart = async () => {
+    try {
+      const data = {
+        productId: id,
+        quantity
+      }
+      const res = await requestAddToCart(data)
+      toast.success(res.message)
+      await fetchProductDetail()
+    } catch (error) {
+      toast.error(error.response.data.message)
+    }
+  }
   return (
     <main className='min-h-screen bg-background pt-[100px]'>
       {/* Header */}
@@ -46,11 +64,13 @@ export default function ProductPage() {
           <div className='flex flex-col gap-6'>
             {/* Main Image */}
             <div className='relative bg-muted rounded-lg overflow-hidden aspect-square'>
-              <img
-                src={productData?.imagesProduct?.[selectedImageIndex] || ''}
-                alt={productData?.nameProduct || ''}
-                className='object-cover'
-              />
+              {productData?.imagesProduct?.[1] && (
+                <img
+                  src={productData.imagesProduct[selectedImageIndex]}
+                  alt={productData?.nameProduct}
+                  className='object-cover'
+                />
+              )}
 
               {/* Navigation Buttons */}
               {productData?.imagesProduct?.length > 1 && (
@@ -185,14 +205,26 @@ export default function ProductPage() {
                 </div>
               </div>
 
-              <Button
-                size='lg'
-                className='w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6 text-lg'
-                disabled={productData.stockProduct === 0}
-              >
-                <ShoppingCart className='w-5 h-5 mr-2' />
-                Thêm vào giỏ hàng
-              </Button>
+              {!dataUser && !dataUser?._id ? (
+                <Link>
+                  <Button
+                    size='lg'
+                    className='w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6 text-lg'
+                  >
+                    Vui lòng đăng nhập
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  onClick={handleAddToCart}
+                  size='lg'
+                  className='w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6 text-lg'
+                  disabled={productData.stockProduct === 0}
+                >
+                  <ShoppingCart className='w-5 h-5 mr-2' />
+                  Thêm vào giỏ hàng
+                </Button>
+              )}
             </div>
 
             {/* Product Details */}

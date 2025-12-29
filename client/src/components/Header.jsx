@@ -5,11 +5,27 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Search, ShoppingCart, User, Menu, X } from 'lucide-react'
 import { ModeToggle } from './mode-toggle'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useStore } from '@/hooks/useStore'
+import { UserNav } from './UserNav'
+import { requestLogout } from '@/config/UserRequest'
+import { toast } from 'sonner'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-
+  const { dataUser } = useStore()
+  const navigate = useNavigate()
+  const handleLogout = async () => {
+    try {
+      const res = await requestLogout()
+      setTimeout(() => {
+        navigate('/login')
+      }, 1000)
+      toast.success(res.message)
+    } catch (error) {
+      toast.error(error.response?.data?.message)
+    }
+  }
   return (
     <header className='w-full bg-background border-b border-border fixed top-0 left-0 z-50'>
       {/* Top Bar */}
@@ -48,25 +64,30 @@ export default function Header() {
           <div className='flex items-center gap-2 flex-shrink-0'>
             <ModeToggle />
 
-            {/* <Button variant='ghost' size='icon' className='relative'>
+            <Button variant='ghost' size='icon' className='relative cursor-pointer'>
               <ShoppingCart className='h-5 w-5' />
               <span className='absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold'>
                 0
               </span>
             </Button>
 
-           
             <Button variant='ghost' size='icon' className='hidden sm:flex'>
               <User className='h-5 w-5' />
-            </Button> */}
+            </Button>
 
             {/* Login and Signup Buttons */}
-            <div className='hidden sm:flex gap-2'>
-              <Button variant='outline' size='sm'>
-                Đăng nhập
-              </Button>
-              <Button size='sm'>Đăng ký</Button>
-            </div>
+            {dataUser && dataUser?._id ? (
+              <UserNav user={dataUser} onLogout={handleLogout} />
+            ) : (
+              <div className='hidden sm:flex gap-2'>
+                <Link to='/login'>
+                  <Button variant='outline' size='sm'>
+                    Đăng nhập
+                  </Button>
+                </Link>
+                <Button size='sm'>Đăng ký</Button>
+              </div>
+            )}
 
             {/* Mobile Menu Button */}
             <Button variant='ghost' size='icon' className='lg:hidden' onClick={() => setIsMenuOpen(!isMenuOpen)}>

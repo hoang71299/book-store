@@ -3,7 +3,7 @@ const { ConflictRequestError, AuthFailureError, NotFoundError, BadRequestError }
 const { Created, OK } = require('../core/success.response')
 const jwt = require('jsonwebtoken')
 const SendMailForgotPassword = require('../utils/mailForgotPassword')
-const { createAccessToken, createRefreshToken } = require('../auth/checkAuth')
+const { createAccessToken, createRefreshToken, verifyToken } = require('../auth/checkAuth')
 const bcrypt = require('bcrypt')
 const otpGenerator = require('otp-generator')
 
@@ -164,6 +164,29 @@ class UserController {
     await findUser.save()
     return new OK({
       message: 'Đặt lại mật khẩu thành công',
+      metadata: true
+    }).send(res)
+  }
+  async refreshToken(req, res) {
+    const refreshToken = req.cookies.refreshToken
+
+    if (!refreshToken) {
+      throw new AuthFailureError('Vui lòng đăng nhập lại')
+    }
+    const decoded = await verifyToken(refreshToken)
+    if (!decoded) {
+      throw new AuthFailureError('Vui lòng đăng nhập lại')
+    }
+    const accessToken = createAccessToken({ id: decoded.id })
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
+      sameSite: 'strict'
+    })
+
+    return new OK({
+      message: 'Refresh token thành công',
       metadata: true
     }).send(res)
   }

@@ -1,14 +1,37 @@
-import DetailProduct from '@/pages/DetailProduct'
+import MainLayout from '../layout/MainLayout'
 import App from '../App'
-const routes = [
+import DetailProduct from '../Page/DetailProduct'
+import { createBrowserRouter } from 'react-router-dom'
+import AuthenticationLayout from '@/layout/AuthenticationLayout'
+import LoginUser from '../Page/LoginUser'
+import RegisterUser from '@/Page/RegisterUser'
+const router = createBrowserRouter([
   {
-    path: '/',
-    component: <App />
+    element: <MainLayout />,
+    children: [
+      {
+        path: '/',
+        element: <App />
+      },
+      {
+        path: 'product/:id',
+        element: <DetailProduct />
+      }
+    ]
   },
   {
-    path: 'product/:id',
-    component: <DetailProduct />
+    element: <AuthenticationLayout />,
+    children: [
+      {
+        path: '/login',
+        element: <LoginUser />
+      },
+      {
+        path: '/register',
+        element: <RegisterUser />
+      }
+    ]
   }
-]
+])
 
-export default routes
+export default router
