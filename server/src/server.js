@@ -1,40 +1,41 @@
 const express = require('express')
-const bodyParser = require('body-parser')
-const cors = require('cors')
-const cookieParser = require('cookie-parser')
-
-const connectDB = require('../config/connectDB')
-const routes = require('../routes/index.routes')
-
 const app = express()
+const port = 3000
 
-app.use(
-  cors({
-    origin: 'http://localhost:5173', // lát nữa sửa
-    credentials: true
-  })
-)
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
+const cors = require('cors')
+
+const connectDB = require('./config/connectDB')
+const routes = require('./routes/index.routes')
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
+
 app.use(cookieParser())
 
 connectDB()
 
 app.get('/', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Hello l2 team'
+  return res.json({
+    message: 'ok',
+    metadata: { message: 'Ok' }
   })
 })
 
 routes(app)
 
 app.use((err, req, res, next) => {
-  const statuscode = err.statusCode || 500
-  res.status(statuscode).json({
+  const statusCode = err.statusCode || 500
+  console.log(err)
+  return res.status(statusCode).json({
     success: false,
-    message: err.message || 'lỗi server'
+    message: err.message || 'Lỗi server'
   })
 })
 
-module.exports = app
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
