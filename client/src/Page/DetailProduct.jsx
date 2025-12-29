@@ -19,7 +19,7 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1)
   const [isLiked, setIsLiked] = useState(false)
 
-  const { dataUser } = useStore()
+  const { dataUser, getCart } = useStore()
 
   const discountedPrice = Math.floor(productData.priceProduct * (1 - productData.discountProduct / 100))
 
@@ -48,6 +48,7 @@ export default function ProductPage() {
       const res = await requestAddToCart(data)
       toast.success(res.message)
       await fetchProductDetail()
+      await getCart()
     } catch (error) {
       toast.error(error.response.data.message)
     }

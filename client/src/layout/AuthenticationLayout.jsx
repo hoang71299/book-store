@@ -8,7 +8,7 @@ export default function AuthenticationLayout() {
     <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
       <div>
         <Outlet />
-        <Toaster position='top-right' richColors />
+        <Toaster richColors />
       </div>
     </ThemeProvider>
   )

@@ -13,7 +13,7 @@ export default function MainLayout() {
           </header>
           <main>
             <Outlet />
-            <Toaster position='top-right' richColors />
+            <Toaster richColors />
           </main>
         </div>
       </ThemeProvider>

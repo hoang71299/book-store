@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { dataUser } = useStore()
+  const { dataUser, cart } = useStore()
   const navigate = useNavigate()
   const handleLogout = async () => {
     try {
@@ -67,13 +67,13 @@ export default function Header() {
             <Button variant='ghost' size='icon' className='relative cursor-pointer'>
               <ShoppingCart className='h-5 w-5' />
               <span className='absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold'>
-                0
+                {cart?.cart?.products?.length || 0}
               </span>
             </Button>
-
+            {/* 
             <Button variant='ghost' size='icon' className='hidden sm:flex'>
               <User className='h-5 w-5' />
-            </Button>
+            </Button> */}
 
             {/* Login and Signup Buttons */}
             {dataUser && dataUser?._id ? (
