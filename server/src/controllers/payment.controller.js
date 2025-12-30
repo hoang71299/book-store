@@ -171,12 +171,25 @@ class PaymentController {
   async vnpayCallback(req, res) {
     const { vnp_ResponseCode, vnp_OrderInfo, vnp_TxnRef } = req.query
 
-    if (vnp_ResponseCode !== '00') {
-      throw new BadRequestError('Thanh toán thất bại')
-    }
-
     const userId = vnp_TxnRef.split(' ')[0]
     const findCartUser = await cartModel.findOne({ userId })
+    if (vnp_ResponseCode !== '00') {
+      const paymentFailed = await paymentModel.create({
+        userId,
+        products: findCartUser.products,
+        totalPrice: findCartUser.totalPrice,
+        fullName: findCartUser.fullName,
+        phoneNumber: findCartUser.phoneNumber,
+        address: findCartUser.address,
+        email: findCartUser.email,
+        finalPrice: findCartUser.finalPrice,
+        couponId: findCartUser.couponId,
+        paymentMethod: 'vnpay',
+        status: 'failed'
+      })
+      return res.redirect(`${process.env.CLIENT_URL}/payment-failed/${paymentFailed._id}`)
+    }
+
     if (!findCartUser) {
       throw new NotFoundError('Giỏ hàng không tồn tại')
     }
@@ -199,8 +212,7 @@ class PaymentController {
       userId,
       products: []
     })
-    await findCartUser.deleteOne()
-    await cartModel.create({ userId, products: [] })
+
     await couponModel.findByIdAndUpdate(findCartUser.couponId, {
       $inc: { quantity: -1 }
     })
@@ -210,7 +222,20 @@ class PaymentController {
   async momoCallback(req, res) {
     const { resultCode, orderInfo } = req.query
     if (resultCode !== '0') {
-      throw new BadRequestError('Thanh toán thất bại')
+      const paymentFailed = await paymentModel.create({
+        userId,
+        products: findCartUser.products,
+        totalPrice: findCartUser.totalPrice,
+        fullName: findCartUser.fullName,
+        phoneNumber: findCartUser.phoneNumber,
+        address: findCartUser.address,
+        email: findCartUser.email,
+        finalPrice: findCartUser.finalPrice,
+        couponId: findCartUser.couponId,
+        paymentMethod: 'momo',
+        status: 'failed'
+      })
+      return res.redirect(`${process.env.CLIENT_URL}/payment-failed/${paymentFailed._id}`)
     }
     const userId = orderInfo.split(' ')[4]
     const findCartUser = await cartModel.findOne({ userId })

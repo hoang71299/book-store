@@ -8,6 +8,7 @@ import RegisterUser from '@/Page/RegisterUser'
 import CartUser from '../Page/CartUser'
 import Checkout from '@/Page/Checkout'
 import PaymentSuccess from '../Page/PaymentSuccess'
+import PaymentFailed from '@/Page/PaymentFailed'
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: '/payment-success/:orderId',
         element: <PaymentSuccess />
+      },
+      {
+        path: '/payment-failed/:id',
+        element: <PaymentFailed />
       }
     ]
   },

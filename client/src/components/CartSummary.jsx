@@ -42,12 +42,13 @@ export default function CartSummary({ subtotal, discount, couponDiscount, total 
         <span className='text-lg font-semibold'>Tổng cộng</span>
         <span className='text-lg font-bold text-primary'>{total.toLocaleString('vi-VN')}đ</span>
       </div>
-
-      <Link to='/checkout'>
-        <Button className='w-full' size='lg' onClick={handleCheckout}>
-          Thanh toán ({total.toLocaleString('vi-VN')}đ)
-        </Button>
-      </Link>
+      {cart1.cart?.products.length != 0 && (
+        <Link to='/checkout'>
+          <Button className='w-full' size='lg' onClick={handleCheckout}>
+            Thanh toán ({total.toLocaleString('vi-VN')}đ)
+          </Button>
+        </Link>
+      )}
       <Link to={'/'}>
         <Button variant='outline' className='w-full bg-transparent' size='lg'>
           <ArrowLeft className='mr-2 h-4 w-4' />

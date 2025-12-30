@@ -63,6 +63,9 @@ export default function Checkout() {
   const handleCustomerInfoChange = (field, value) => {
     setCustomerInfo((prev) => ({ ...prev, [field]: value }))
   }
+  if (cart1.cart?.products.length === 0) {
+    navigate('/')
+  }
   const handleCheckout = async () => {
     try {
       const data = {
@@ -252,10 +255,11 @@ export default function Checkout() {
                     {formatCurrency(cart1.cart?.couponId ? cart1.cart?.finalPrice : cart1.cart?.totalPrice)}
                   </span>
                 </div>
-
-                <Button size='lg' className='w-full' onClick={handleCheckout}>
-                  Đặt hàng ngay
-                </Button>
+                {cart1.cart?.products.length != 0 && (
+                  <Button size='lg' className='w-full' onClick={handleCheckout}>
+                    Đặt hàng ngay
+                  </Button>
+                )}
               </CardContent>
             </Card>
           </div>

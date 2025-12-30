@@ -90,6 +90,8 @@ class CartController {
       // Xóa sản phẩm khỏi giỏ hàng
       findCartUser.products = findCartUser.products.filter((product) => product.productId.toString() !== productId)
       findProductDb.stockProduct += currentQuantity
+      findCartUser.finalPrice = 0
+      findCartUser.couponId = null
       await findProductDb.save()
     } else if (Number(newQuantity) >= currentQuantity) {
       const addQuantity = Number(newQuantity) - currentQuantity

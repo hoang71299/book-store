@@ -24,6 +24,14 @@ export default function CartUser() {
   const couponDiscount = selectedCoupon ? (afterProductDiscount * selectedCoupon.discount) / 100 : 0
 
   const total = afterProductDiscount - couponDiscount
+  useEffect(() => {
+    const handleApplyCoupon = async () => {
+      await applyCoupon({ couponId: selectedCoupon })
+      await getCart()
+    }
+
+    handleApplyCoupon()
+  }, [selectedCoupon])
   const handleChangeCart = async (productId, quantity) => {
     try {
       const data = {
