@@ -171,14 +171,22 @@ class CartController {
     const id = req.user
     const { couponId } = req.body
 
-    if (!id || !couponId) {
+    if (!id) {
       throw new BadRequestError('Thiếu thông tin áp dụng mã giảm giá')
     }
     const findCartUser = await cartModel.findOne({ userId: id })
     if (!findCartUser) {
       throw new BadRequestError('Giỏ hàng không tồn tại')
     }
-
+    if (couponId == null) {
+      findCartUser.couponId = null
+      findCartUser.finalPrice = 0
+      await findCartUser.save()
+      return new OK({
+        message: 'Cập nhật giỏ hàng thành công',
+        metadata: findCartUser
+      }).send(res)
+    }
     const findCoupon = await couponModel.findById(couponId)
     if (!findCoupon) {
       throw new BadRequestError('Mã giảm giá không tồn tại')
@@ -204,5 +212,30 @@ class CartController {
       metadata: findCartUser
     }).send(res)
   }
+  async updateInfoCart(req, res) {
+    const id = req.user
+    const { fullName, phoneNumber, address, email } = req.body
+
+    if (!id || !fullName || !phoneNumber || !address || !email) {
+      throw new BadRequestError('Thiếu thông tin giỏ hàng')
+    }
+
+    const findCartUser = await cartModel.findOne({ userId: id })
+    if (!findCartUser) {
+      throw new NotFoundError('Giỏ hàng không tồn tại')
+    }
+
+    findCartUser.fullName = fullName
+    findCartUser.phoneNumber = phoneNumber
+    findCartUser.address = address
+    findCartUser.email = email
+    await findCartUser.save()
+
+    return new OK({
+      message: 'Cập nhật thông tin giỏ hàng thành công',
+      metadata: findCartUser
+    }).send(res)
+  }
 }
+
 module.exports = new CartController()

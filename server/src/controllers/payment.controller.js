@@ -204,10 +204,7 @@ class PaymentController {
     await couponModel.findByIdAndUpdate(findCartUser.couponId, {
       $inc: { quantity: -1 }
     })
-    return new Created({
-      message: 'Tạo đơn hàng thành công',
-      metadata: newPayment
-    }).send(res)
+    return res.redirect(`${process.env.CLIENT_URL}/payment-success/${newPayment._id}`)
   }
 
   async momoCallback(req, res) {
@@ -217,6 +214,7 @@ class PaymentController {
     }
     const userId = orderInfo.split(' ')[4]
     const findCartUser = await cartModel.findOne({ userId })
+
     if (!findCartUser) {
       throw new NotFoundError('Giỏ hàng không tồn tại')
     }
@@ -244,10 +242,7 @@ class PaymentController {
     await couponModel.findByIdAndUpdate(findCartUser.couponId, {
       $inc: { quantity: -1 }
     })
-    return new Created({
-      message: 'Tạo đơn hàng thành công',
-      metadata: newPayment
-    }).send(res)
+    return res.redirect(`${process.env.CLIENT_URL}/payment-success/${newPayment._id}`)
   }
 
   async getPaymentsAdmin(req, res) {
@@ -277,6 +272,22 @@ class PaymentController {
     await findPayment.save()
     return new OK({
       message: 'Cập nhật đơn hàng thành công',
+      metadata: findPayment
+    }).send(res)
+  }
+
+  async getPaymentById(req, res) {
+    const { orderId } = req.params
+    const findPayment = await paymentModel
+      .findById(orderId)
+      .populate('userId', 'fullName email')
+      .populate('products.productId', '')
+      .populate('couponId')
+    if (!findPayment) {
+      throw new NotFoundError('Đơn hàng không tồn tại')
+    }
+    return new OK({
+      message: 'Lấy đơn hàng theo id thành công',
       metadata: findPayment
     }).send(res)
   }

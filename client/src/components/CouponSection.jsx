@@ -15,7 +15,7 @@ export default function CouponSection({ coupons, onSelectCoupon, selectedCoupon,
     if (!found) {
       toast.error('Mã giảm giá không tồn tại. Vui lý nhập lại.')
     }
-    if (found && cartTotal >= found.minPrice) {
+    if (found.minPrice) {
       onSelectCoupon(found)
     }
   }

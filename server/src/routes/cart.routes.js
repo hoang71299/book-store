@@ -9,4 +9,5 @@ router.put('/update', authUser, asyncHandler(cartController.updateCart))
 router.delete('/delete/:productId', authUser, asyncHandler(cartController.deleteProductInCart))
 router.get('/get', authUser, asyncHandler(cartController.getCartInUser))
 router.put('/apply-coupon', authUser, asyncHandler(cartController.applyCoupon))
+router.put('/update-info', authUser, asyncHandler(cartController.updateInfoCart))
 module.exports = router

@@ -1,8 +1,15 @@
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { useStore } from '@/hooks/useStore'
 import { ArrowLeft } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 export default function CartSummary({ subtotal, discount, couponDiscount, total }) {
+  const navigate = useNavigate()
+  const { cart1, getCart } = useStore()
+  const handleCheckout = async () => {
+    await getCart()
+    navigate('/checkout')
+  }
   return (
     <div className='space-y-4'>
       <div className='space-y-2'>
@@ -36,9 +43,11 @@ export default function CartSummary({ subtotal, discount, couponDiscount, total 
         <span className='text-lg font-bold text-primary'>{total.toLocaleString('vi-VN')}đ</span>
       </div>
 
-      <Button className='w-full' size='lg'>
-        Thanh toán ({total.toLocaleString('vi-VN')}đ)
-      </Button>
+      <Link to='/checkout'>
+        <Button className='w-full' size='lg' onClick={handleCheckout}>
+          Thanh toán ({total.toLocaleString('vi-VN')}đ)
+        </Button>
+      </Link>
       <Link to={'/'}>
         <Button variant='outline' className='w-full bg-transparent' size='lg'>
           <ArrowLeft className='mr-2 h-4 w-4' />

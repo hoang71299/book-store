@@ -1,6 +1,7 @@
 import request from './request'
 
 import { apiClient } from './axiosClient'
+import { data } from 'react-router-dom'
 
 const apiCart = '/api/cart'
 
@@ -18,5 +19,10 @@ export const requestUpdateCart = async (data) => {
 }
 export const requestDeleteCart = async (id) => {
   const res = await apiClient.delete(`${apiCart}/delete/${id}`)
+  return res.data
+}
+
+export const requestUpdateInfoCart = async (data) => {
+  const res = await apiClient.put(`${apiCart}/update-info`, data)
   return res.data
 }

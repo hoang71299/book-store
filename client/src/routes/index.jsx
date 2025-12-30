@@ -6,6 +6,8 @@ import AuthenticationLayout from '@/layout/AuthenticationLayout'
 import LoginUser from '../Page/LoginUser'
 import RegisterUser from '@/Page/RegisterUser'
 import CartUser from '../Page/CartUser'
+import Checkout from '@/Page/Checkout'
+import PaymentSuccess from '../Page/PaymentSuccess'
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -21,6 +23,14 @@ const router = createBrowserRouter([
       {
         path: '/cart',
         element: <CartUser />
+      },
+      {
+        path: '/checkout',
+        element: <Checkout />
+      },
+      {
+        path: '/payment-success/:orderId',
+        element: <PaymentSuccess />
       }
     ]
   },

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ShoppingCart } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,12 +10,10 @@ import { requestDeleteCart, requestUpdateCart } from '@/config/CartRequest'
 import { toast } from 'sonner'
 import { applyCoupon } from '@/config/CounponRequest'
 export default function CartUser() {
-  const [selectedCoupon, setSelectedCoupon] = useState('')
+  const [selectedCoupon, setSelectedCoupon] = useState(null)
   const { cart1, getCart } = useStore()
   const { cart, coupons } = cart1
-
   const subtotal = cart?.products.reduce((acc, item) => acc + item.productId.priceProduct * item.quantity, 0)
-
   const productDiscount = cart?.products.reduce((acc, item) => {
     const discount = (item.productId.priceProduct * item.productId.discountProduct) / 100
     return acc + discount * item.quantity
@@ -52,7 +50,7 @@ export default function CartUser() {
   const handleChangeCoupon = async (coupon) => {
     setSelectedCoupon(coupon)
     const data = {
-      couponId: coupon._id
+      couponId: coupon?._id
     }
     const res = await applyCoupon(data)
     toast.success(res.message)
