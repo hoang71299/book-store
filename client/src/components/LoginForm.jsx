@@ -68,7 +68,15 @@ const LoginForm = ({ onLogin, dataLogin }) => {
           </Button>
         </div>
       </div>
-
+      <div className='flex justify-end'>
+        <button
+          type='button'
+          onClick={() => navigate('/forgot-password')}
+          className='text-sm text-primary hover:underline'
+        >
+          Quên mật khẩu?
+        </button>
+      </div>
       <Button className='w-full' type='submit'>
         Đăng nhập
       </Button>

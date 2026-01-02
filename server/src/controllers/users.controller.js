@@ -154,7 +154,7 @@ class UserController {
     }
     const email = decoded.email
     const findOtp = await otpModel.findOne({ email, otp })
-    if (!findOtp) {
+    if (!findOtp || findOtp.expiredAt < Date.now()) {
       throw new BadRequestError('Mã OTP không hợp lệ hoặc đã hết hạn')
     }
     const findUser = await userModel.findOne({ email })
@@ -188,6 +188,39 @@ class UserController {
     return new OK({
       message: 'Refresh token thành công',
       metadata: true
+    }).send(res)
+  }
+  async updateProfile(req, res) {
+    const { id } = req.params
+    const { fullName } = req.body
+    const findUser = await userModel.findById(id)
+
+    if (!findUser) {
+      throw new NotFoundError('người dùng khong ton tai')
+    }
+    findUser.fullName = fullName
+    await findUser.save()
+    return new OK({
+      message: 'cap nhat thanh cong',
+      metadata: findUser
+    }).send(res)
+  }
+
+  async changePassword(req, res) {
+    const id = req.user
+    const { newPassword } = req.body
+    const findUser = await userModel.findById(id)
+    if (!findUser) {
+      throw new NotFoundError('người dùng khong ton tai')
+    }
+
+    const saltRounds = 10
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds)
+    findUser.password = hashedPassword
+    await findUser.save()
+    return new OK({
+      message: 'cap nhat thanh cong',
+      metadata: findUser
     }).send(res)
   }
 }

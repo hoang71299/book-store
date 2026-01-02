@@ -10,4 +10,5 @@ router.get('/momo-callback', asyncHandler(PaymentController.momoCallback))
 router.get('/order/:orderId', asyncHandler(PaymentController.getPaymentById))
 router.get('/admin/list', authAdmin, asyncHandler(PaymentController.getPaymentsAdmin))
 router.put('/admin/update/:orderId', authAdmin, asyncHandler(PaymentController.updatePayment))
+router.get('/list', authUser, asyncHandler(PaymentController.getAllPayment))
 module.exports = router

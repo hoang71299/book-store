@@ -316,5 +316,14 @@ class PaymentController {
       metadata: findPayment
     }).send(res)
   }
+
+  async getAllPayment(req, res) {
+    const id = req.user
+    const payments = await paymentModel.find({ userId: id }).populate('userId', 'fullName email')
+    return new OK({
+      message: 'Lấy danh sách đơn hàng theo người dùng',
+      metadata: payments
+    }).send(res)
+  }
 }
 module.exports = new PaymentController()

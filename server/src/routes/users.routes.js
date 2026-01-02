@@ -12,5 +12,7 @@ router.get('/logout', authUser, asyncHandler(usersController.logout))
 router.post('/forgot-password', asyncHandler(usersController.forgotPassword))
 router.post('/verify-forgot-password', asyncHandler(usersController.verifyForgotPassword))
 router.get('/refresh-token', asyncHandler(usersController.refreshToken))
+router.put('/update-profile/:id', authUser, asyncHandler(usersController.updateProfile))
+router.post('/change-password', authUser, asyncHandler(usersController.changePassword))
 
 module.exports = router

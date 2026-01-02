@@ -9,6 +9,12 @@ import CartUser from '../Page/CartUser'
 import Checkout from '@/Page/Checkout'
 import PaymentSuccess from '../Page/PaymentSuccess'
 import PaymentFailed from '@/Page/PaymentFailed'
+import MyOrderPage from '@/Page/MyOrderPage'
+import ProfilePage from '@/Page/ProfilePage'
+import ChangePasswordPage from '@/Page/ChangePasswordPage'
+import UpdateProfilePage from '@/Page/UpdateProfilePage'
+import ForgotPasswordPage from '@/Page/ForgotPasswordPage'
+import VerifyPasswordPage from '@/Page/VerifyPasswordPage'
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -36,6 +42,22 @@ const router = createBrowserRouter([
       {
         path: '/payment-failed/:id',
         element: <PaymentFailed />
+      },
+      {
+        path: '/my-order',
+        element: <MyOrderPage />
+      },
+      {
+        path: '/profile',
+        element: <ProfilePage />
+      },
+      {
+        path: '/profile/change-password',
+        element: <ChangePasswordPage />
+      },
+      {
+        path: '/profile/update',
+        element: <UpdateProfilePage />
       }
     ]
   },
@@ -49,6 +71,14 @@ const router = createBrowserRouter([
       {
         path: '/register',
         element: <RegisterUser />
+      },
+      {
+        path: '/forgot-password',
+        element: <ForgotPasswordPage />
+      },
+      {
+        path: '/verify-forgot-password',
+        element: <VerifyPasswordPage />
       }
     ]
   }

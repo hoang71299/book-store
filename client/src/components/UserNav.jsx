@@ -11,8 +11,10 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { User, Settings, LogOut, CreditCard, HelpCircle } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 export function UserNav({ user, onLogout }) {
+  const navigate = useNavigate()
   // Lấy chữ cái đầu của tên để hiển thị fallback
   const getInitials = (name) => {
     if (!name) return 'U'
@@ -40,11 +42,11 @@ export function UserNav({ user, onLogout }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate('/profile')}>
             <User className='mr-2 h-4 w-4' />
             <span>Thông tin cá nhân</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate('/my-order')}>
             <CreditCard className='mr-2 h-4 w-4' />
             <span>Đơn hàng của tôi</span>
           </DropdownMenuItem>

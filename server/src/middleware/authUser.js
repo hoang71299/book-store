@@ -44,6 +44,7 @@ const authAdmin = async (req, res, next) => {
     if (findUser.isAdmin === false) {
       throw new ForbiddenError('bạn ko co quyền')
     }
+    req.user = decoded.id
     next()
   } catch (error) {
     throw new ForbiddenError('bạn ko co quyền')

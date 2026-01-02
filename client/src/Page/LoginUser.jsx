@@ -18,12 +18,11 @@ const LoginUser = () => {
   const handleLogin = async (data) => {
     try {
       const res = await requestLogin(data)
-
       setDataLogin(res)
+      toast.success(res.message, { duration: 2000 })
       setTimeout(() => {
         navigate('/')
-      }, 1000)
-      toast.success(res.message)
+      }, 2000)
     } catch (err) {
       toast.error(err.response.data.message)
     }

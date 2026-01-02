@@ -13,3 +13,8 @@ export const requestPaymentById = async (id) => {
   const res = await apiClient.get(`${apiPayment}/order/${id}`)
   return res.data
 }
+
+export const getAllPayment = async () => {
+  const res = await apiClient.get(`${apiPayment}/list`)
+  return res.data
+}

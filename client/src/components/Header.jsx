@@ -87,7 +87,9 @@ export default function Header() {
                     Đăng nhập
                   </Button>
                 </Link>
-                <Button size='sm'>Đăng ký</Button>
+                <Link to='/register'>
+                  <Button size='sm'>Đăng ký</Button>
+                </Link>
               </div>
             )}
 

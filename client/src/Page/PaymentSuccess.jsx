@@ -4,10 +4,11 @@ import { Badge } from '@/components/ui/badge'
 import { Check, Package, MapPin, Phone, Mail, CreditCard } from 'lucide-react'
 import { requestPaymentById } from '@/config/paymentRequest'
 import { toast } from 'sonner'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export default function PaymentSuccess() {
   const { orderId } = useParams()
+  const navigate = useNavigate()
   const [dataPayment, setDataPayment] = useState(null)
   const orderData = {
     _id: '6953a0a7a95bb2422b2ddeb7',
@@ -186,8 +187,9 @@ export default function PaymentSuccess() {
 
         {/* Actions */}
         <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-          <button className='px-8 py-3 bg-primary text-primary-foreground rounded-lg'>Tiếp tục mua hàng</button>
-          <button className='px-8 py-3 border rounded-lg'>Theo dõi đơn hàng</button>
+          <button onClick={() => navigate('/')} className='px-8 py-3 bg-primary text-primary-foreground rounded-lg'>
+            Tiếp tục mua hàng
+          </button>
         </div>
       </div>
     </main>

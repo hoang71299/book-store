@@ -38,7 +38,7 @@ export function Provider({ children }) {
   }, [logged])
 
   return (
-    <Context.Provider value={{ dataUser, cart1, getCart, fetchProduct, dataProduct, setDataProduct }}>
+    <Context.Provider value={{ dataUser, cart1, getCart, fetchProduct, dataProduct, setDataProduct, setDataUser }}>
       {children}
     </Context.Provider>
   )

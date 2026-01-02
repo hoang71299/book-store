@@ -136,7 +136,16 @@ const RegisterForm = ({ onRegister }) => {
         </div>
         {passwordError && <p className='text-xs text-red-500 mt-1'>{passwordError}</p>}
       </div>
-
+      {/* Forgot password */}
+      <div className='flex justify-end'>
+        <button
+          type='button'
+          onClick={() => navigate('/forgot-password')}
+          className='text-sm text-primary hover:underline'
+        >
+          Quên mật khẩu?
+        </button>
+      </div>
       <Button className='w-full' type='submit' disabled={!isFormValid}>
         Đăng kí
       </Button>
