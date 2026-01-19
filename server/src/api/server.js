@@ -5,19 +5,13 @@ const port = process.env.PORT || 3000
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
-
 const connectDB = require('../config/connectDB')
 const routes = require('../routes/index.routes')
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
-
 app.use(cookieParser())
-
 connectDB()
-
 app.get('/', (req, res) => {
   return res.json({
     message: 'ok',
@@ -36,8 +30,8 @@ app.use((err, req, res, next) => {
   })
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+// app.listen(port, () => {
+//   console.log(`Example app listening on port ${port}`)
+// })
 
-// module.exports = app
+module.exports = app
